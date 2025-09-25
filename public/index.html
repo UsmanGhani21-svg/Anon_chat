@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnonChat - Anonymous Chat Rooms</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+        <div class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+        <header class="header">
+            <h1 class="logo">AnonChat</h1>
+            <p class="tagline">Anonymous, Secure, Ephemeral Conversations</p>
+        </header>
+
+        <!-- Profile Creation Screen -->
+        <div id="profile-screen" class="profile-screen">
+            <div class="profile-card">
+                <h2>Create Your Anonymous Identity</h2>
+                <div class="form-group">
+                    <label class="form-label" for="username">Choose Username</label>
+                    <input type="text" id="username" class="form-input" placeholder="Enter your anonymous name..."
+                        maxlength="20">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="avatar">Profile Color</label>
+                    <input type="color" id="avatar" class="form-input" value="#6366f1">
+                </div>
+                <button class="btn btn-primary" onclick="createProfile()" style="width: 100%;">
+                    <span>Enter AnonChat</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Chat Interface -->
+        <div id="chat-interface" class="main-interface hidden">
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <div class="user-profile">
+                        <div class="user-avatar" id="user-avatar">
+                            <span id="user-avatar-text">A</span>
+                        </div>
+                        <div class="user-info">
+                            <h3 id="user-name">Anonymous</h3>
+                            <div class="user-status">
+                                <div class="status-dot"></div>
+                                <span>Online</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="logout()" style="width: 100%;">
+                        <span>Logout</span>
+                    </button>
+                </div>
+
+                <div class="rooms-section">
+                    <div class="section-title">
+                        <span>Active Rooms</span>
+                        <span class="room-count" id="room-count">0</span>
+                    </div>
+
+                    <div class="room-controls">
+                        <button class="btn btn-primary btn-sm" onclick="createRoom()">
+                            <span>+ Create</span>
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="joinRoomPrompt()">
+                            <span>Join Room</span>
+                        </button>
+                    </div>
+
+                    <div class="room-list" id="room-list">
+                        <div style="text-align: center; color: var(--text-muted); padding: 2rem 1rem;">
+                            <p>No active rooms</p>
+                            <small>Create or join a room to start chatting</small>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="chat-area">
+                <!-- Welcome Screen -->
+                <div id="welcome-screen" class="welcome-screen">
+                    <div class="welcome-icon">💬</div>
+                    <h2 class="welcome-title">Welcome to AnonChat</h2>
+                    <p class="welcome-subtitle">Create a room or join an existing one to start anonymous conversations
+                        that disappear when you logout.</p>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                        <button class="btn btn-primary" onclick="createRoom()">
+                            <span>Create New Room</span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="joinRoomPrompt()">
+                            <span>Join Room</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chat Room -->
+                <div id="chat-room" class="hidden">
+                    <div class="chat-header">
+                        <div class="chat-title">
+                            <h3 id="room-title">Room Name</h3>
+                            <div class="chat-subtitle">
+                                <span class="participant-badge" id="participant-count">0 online</span>
+                                <span>•</span>
+                                <span>Ephemeral chat</span>
+                            </div>
+                        </div>
+                        <div class="chat-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="shareRoom()">
+                                <span>📤 Share</span>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="clearChat()">
+                                <span>🗑️ Clear</span>
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="leaveRoom()">
+                                <span>🚪 Leave</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="share-link-container" class="share-link-container hidden">
+                        <div
+                            style="display: flex; justify-content: between; align-items: center; margin-bottom: 0.5rem;">
+                            <strong>Share this room:</strong>
+                            <button class="btn btn-secondary btn-sm" onclick="copyShareLink()">
+                                <span>📋 Copy</span>
+                            </button>
+
+                        </div>
+                        <div class="share-url" id="share-url">Loading...</div>
+                    </div>
+
+                    <div class="chat-messages" id="chat-messages">
+                        <div style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
+                            <p style="font-size: 3rem; margin-bottom: 1rem;">🔒</p>
+                            <h3 style="margin-bottom: 0.5rem;">Ephemeral Chat</h3>
+                            <p>Messages in this room will be automatically cleared when all users logout.</p>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-container">
+                        <div class="chat-input">
+                            <input type="file" id="file-input" style="display:none;" onchange="uploadFile(event)">
+                            <button class="btn btn-secondary" onclick="document.getElementById('file-input').click()">📎
+                                File</button>
+                            <input type="text" id="message-input" class="form-input" placeholder="Type your message..."
+                                maxlength="500" onkeypress="handleMessageKeyPress(event)" style="flex: 1;">
+                            <button class="btn btn-primary" onclick="sendMessage()">
+                                <span>Send</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+
+
+    <!-- Add Socket.IO Client -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
