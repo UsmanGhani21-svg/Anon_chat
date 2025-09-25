@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: anonchat-app
+    env: node
+    plan: free   # change to 'starter' or higher if you want more resources
+    buildCommand: |
+      npm install
+    startCommand: |
+      node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000  # Render sets PORT automatically, but declare it for clarity
+    autoDeploy: true
